@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Battleships</title>
+        <script src="jatos.js"></script>
+        <script src="jquery/jquery.min.js"></script>
+        <script src="jspsych-6.1.0/jspsych.js"></script>
+        <script src="jspsych-6.1.0/plugins/jspsych-preRNG.js"></script>
+        <script src="jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
+        <script src="jspsych-6.1.0/plugins/jspsych-track_cursor.js"></script>
+        <script src="jspsych-6.1.0/plugins/jspsych-replay_cursor.js"></script>
+        <script src="jspsych-6.1.0/plugins/jspsych-instructions.js"></script>
+        <script src="p5/p5.min.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Corben&family=Quicksand&display=swap" rel="stylesheet">
+        <link href="style.css" rel="stylesheet" type="text/css"></link>
+    </head>
+    <body></body>
+    <script>
+
+    function makeTimeline() {
+
+      timeline = [];
+
+
+       timeline.push({
+         type: 'fullscreen',
+         fullscreen_mode: true
+       });
+
+       timeline.push({
+         type:'instructions',
+         pages: ['Move the cursor on the screen for 5 seconds'],
+         show_clickable_nav: true,
+       })
+
+
+       timeline.push({
+         type:'track_cursor',
+         on_finish: (data) => {
+           console.log(data.cursor_log)
+           window.cursor_log = data.cursor_log;
+           // console.log(window.log)
+         }
+       });
+       timeline.push({
+         type:'instructions',
+         pages: ['Now watch your trajectory!'],
+         show_clickable_nav: true,
+       })
+
+
+       timeline.push({
+         type:'replay_cursor',
+         cursor_log: ()=>{
+           return window.cursor_log;
+         }
+       });
+
+       return timeline
+     }
+
+
+
+    timeline=makeTimeline()
+    jsPsych.init({
+        timeline: timeline,
+        on_finish: function() {
+              jsPsych.data.get().localSave('csv','mydata.csv');        }
+  })
+
+
+</script>
+</html>
